@@ -1,3 +1,4 @@
+
 /vendor/
 node_modules/
 npm-debug.log
@@ -21,3 +22,8 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+
+# github
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml

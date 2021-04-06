@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use Illuminate\Http\Request;
+use App\Companies;
 class LoginController extends Controller
 {
     /*
@@ -26,8 +28,46 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/entreprise';
+/////// show login form for company 
+    public function showLoginForm()
+    {
+       
+    
+        return view('auth.login');
+    }
 
+    public function showAdminLoginForm()
+    {
+       
+    
+        return view('administrateur.login_page');
+    }
+
+    public function CompanyLogin(Request $request)
+    {
+        $this->validate($request, [
+            'email'   => 'required|email',
+            'password' => 'required|min:6'
+        ]);
+
+        if (Auth::guard('Company')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+
+            return redirect()->intended('/entreprise');
+        }
+        return back()->withInput($request->only('email', 'remember'));
+    }
+
+    
+    public function logout(Request $request) {
+        Auth::guard('web')->logout();
+        return redirect('admin/');
+      }
+      public function CompanyLogout(Request $request) {
+          
+        Auth::guard('Company')->logout();
+        return redirect('entreprise/');
+      }
     /**
      * Create a new controller instance.
      *
@@ -35,6 +75,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest:web')->except('logout');
+        $this->middleware('guest:Company')->except('CompanyLogout');
     }
 }

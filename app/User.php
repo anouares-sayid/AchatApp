@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
-
+    protected $guard = 'web';
     /**
      * The attributes that are mass assignable.
      *

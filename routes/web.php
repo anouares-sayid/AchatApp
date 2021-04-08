@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,7 +47,6 @@ Route::group(['prefix'=>'admin'], function () {
  
 
     
-    
     });
 
 
@@ -77,6 +77,12 @@ Route::group(['prefix'=>'entreprise'], function () {
 
 
 });
+
+    //Mouad
+
+    Route::resource('/tinders','TindersController')->only(['store','destroy','archive']);
+    Route::get('/tinders/archive/{id}','TindersController@archive')->name('archive');
+    
 
 
     

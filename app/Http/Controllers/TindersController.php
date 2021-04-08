@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Tinders;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TindersController extends Controller
@@ -36,15 +37,25 @@ class TindersController extends Controller
     public function store(Request $request)
     {
         //
-
+        $request->validate([
+            'buyer' => 'required',
+            'procurementMethod'=> 'required',
+            'marketType' => 'required',
+            'estimatedCost' => 'required',
+            'activityField' => 'required',
+            'category' => 'required',
+            'agreement' =>'required'
+        ]);
         $tinder = new tinders();
-        $tinder->buyer_id = $request->buyer_id;
-        $tinder->procurementMethod = $request->procurementMethod;
-        $tinder->marketType = $request->marketType;
-        $tinder->estimatedCost=$request->estimatedCost;
-        $tinder->activityField=$request->activityField;
-        $tinder->category=$request->category;
-        $tinder->agreement=$request->agreement;
+        $tinder->buyer_id = $request->input('buyer'); 
+        $tinder->procurementMethod = $request->input('procurementMethod');
+        $tinder->marketType = $request->input('marketType');
+        $tinder->estimatedCost=$request->input('estimatedCost');
+        $tinder->activityField=$request->input('activityField');
+        $tinder->category=$request->input('category');
+        $tinder->agreement=$request->input('agreement');
+
+        return redirect()->back()->with('succes','tinder stored successfully.');
     }
 
     /**
@@ -88,8 +99,21 @@ class TindersController extends Controller
      * @param  \App\Tinders  $tinders
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tinders $tinders)
+    public function destroy($id)
     {
+        Tinders::find($id)->delete();  
+        return redirect()->back()->with('succes','tinder removed successfully');
         //
+    }
+    //terminer l'appel d'offre auto...
+    public function archive($id){
+        $tinder=Tinders::find($id);
+        $diff = Carbon::now()->diffInDays($tinder->date);
+        if(Carbon::now()->greaterThanOrEqualTo($tinder->date)){
+            return view('acheteur.index');
+        }
+        //dd($mytime);
+        return redirect()->back();
+
     }
 }
